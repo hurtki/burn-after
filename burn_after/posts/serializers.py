@@ -21,7 +21,6 @@ class PostQueryParamsSerializer(serializers.Serializer):
 
 # сериализатор постов 
 class PostSerializer(serializers.ModelSerializer):
-    like_count = serializers.SerializerMethodField()
     author_username = serializers.CharField(source='author.username', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
 
@@ -33,9 +32,6 @@ class PostSerializer(serializers.ModelSerializer):
             'content',
             'created_at',
             'author_username',
-            'category_name',
-            'like_count',
+            'category_name'
         ]
-
-    def get_like_count(self, obj):
-        return obj.like_set.count()
+    
