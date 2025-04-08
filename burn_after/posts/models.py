@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     # поле название категории 
     name = models.CharField("name", max_length=12)
-    
+    # автор категории 
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
 # модель поста 
 class Post(models.Model):
@@ -18,6 +19,10 @@ class Post(models.Model):
     created_at = models.DateTimeField("time of creation", auto_now_add=True)
     # система лайков 
     likes = models.ManyToManyField(User, through='Like', related_name='liked_posts')
+    # категория поста 
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    # взорванный пост или нет 
+    is_exploded = models.BooleanField("is_exploded")
     
     def __str__(self):
         return f"post: {self.title}"
@@ -25,9 +30,9 @@ class Post(models.Model):
 # модель связи поста и пользователя ( модель лайка )
 class Like(models.Model):
     # пользователь 
-    user = models.ForeignKey("user", User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     # пост которому лайк
-    post = models.ForeignKey("post", Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     # дата создания поста
     created_at = models.DateTimeField("time of creation", auto_now_add=True)
     
