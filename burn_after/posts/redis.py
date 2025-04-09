@@ -5,8 +5,8 @@ from .serializers import PostSerializer
 from .redis_helper import cache, cache_set_json, cache_get_json, cache_delete, get_zset_length
 from django.db.models import Count
 
-# Функция для получения списка категорий из кеша
-def get_categories_from_cache():
+# Функция для получения списка категорий из кеша или их замены в кеше на данные из базы данных
+def get_categories_from_cache() -> list:
     categories = cache_get_json('categories_list')
     if not categories:
         categories = list(Category.objects.values_list('name', flat=True))
@@ -15,7 +15,7 @@ def get_categories_from_cache():
 
 
 # Функция для занесения категории в кеш
-def add_category_to_cache(new_category_name):
+def add_category_to_cache(new_category_name) -> None:
     categories = get_categories_from_cache()
     if new_category_name not in categories:
         categories.append(new_category_name)
@@ -23,7 +23,7 @@ def add_category_to_cache(new_category_name):
 
 
 # Функция для получения сериализованного поста из кеша
-def get_serialized_post_data_from_cache(ids):
+def get_serialized_post_data_from_cache(ids) -> list:
     # создаем дикт для хранения сериализованных данных постов
     cached_data = {}
     # лист для хранения айдишников, которые мы не найдем в кеше
@@ -53,7 +53,7 @@ def get_serialized_post_data_from_cache(ids):
 
 
 # Получаем посты из Zset
-def get_posts_for_page(zset_key, start, end, sort):
+def get_posts_for_page(zset_key, start, end, sort) -> list:
     if "-" in sort:
         return cache.zrevrange(zset_key, start, end)
     else:
@@ -70,7 +70,7 @@ def ensure_zset_cached(zset_key: str, category: Category, sort: str, is_exploded
             cache.zadd(zset_key, {str(post.id): score})
             serialized_post = PostSerializer(post).data
             cache_set_json(f'post:{post.id}', serialized_post, ex=settings.POST_CACHE_SECONDS)
-
+    
 
 def get_length_of_zset(zset_key: str) -> int:
     return get_zset_length(zset_key)
