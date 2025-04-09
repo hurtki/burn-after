@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post
-from .redis import get_categories_from_cache
+# from .redis import get_categories_from_cache
 
 class PostQueryParamsSerializer(serializers.Serializer):
     category = serializers.CharField(required=True, allow_blank=False)
@@ -15,10 +15,13 @@ class PostQueryParamsSerializer(serializers.Serializer):
         if value not in allowed_values:
             raise serializers.ValidationError(f'Invalid sort value. Allowed values are {", ".join(allowed_values)}.')
         return value
-    def validate_category(self, value):
-        if not self.category in get_categories_from_cache():
-            return serializers.ValidationError(f"Category with name{self.category} doesn't exist")
 
+    def validate_category(self, value):
+        from .redis import get_categories_from_cache
+        category = value[0] if isinstance(value, list) else value
+        if not category in get_categories_from_cache():
+            raise serializers.ValidationError(f"Category with name{value} doesn't exist")
+        return category
 # сериализатор постов 
 class PostSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source='author.username', read_only=True)
