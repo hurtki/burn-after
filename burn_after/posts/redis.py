@@ -66,7 +66,7 @@ def get_posts_for_page(zset_key, start, end, sort) -> list:
 def ensure_zset_cached(zset_key: str, category: Category, sort: str, is_exploded: bool) -> None:
     if not cache.zcard(zset_key):
         posts = Post.objects.filter(category=category, is_exploded=is_exploded).annotate(like_count=Count('likes'))
-
+        
         for post in posts:
             score = post.created_at.timestamp() if sort == "created_at" else post.like_count
             cache.zadd(zset_key, {str(post.id): score})
