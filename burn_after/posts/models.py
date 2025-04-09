@@ -7,6 +7,8 @@ class Category(models.Model):
     # автор категории 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
 # модель поста 
 class Post(models.Model):
     # поле внешнего ключа пользователя который опубликовал пост 
