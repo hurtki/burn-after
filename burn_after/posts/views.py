@@ -61,5 +61,4 @@ class PostsAPIView(APIView):
             }, status=400)
         # смотри было ли в запросе отрицание сортировки и в зависимости от этого вытаскиваем айдишники из кеша
         posts_ids = get_posts_for_page(zset_key, start, end, sort)
-            
         return Response(get_serialized_post_data_from_cache(posts_ids))
