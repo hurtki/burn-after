@@ -48,7 +48,6 @@ def get_serialized_post_data_from_cache(ids) -> list:
             # тк списой айдишников в строках то и айдишник объекта из базы тоже в строку чтобы потом не ломалось при их переборе 
             cached_data[str(obj.id)] = serialized_data
 
-    print(cached_data)
     # собираем результат
     result = [cached_data[obj_id] for obj_id in ids]
     

@@ -48,8 +48,7 @@ class PostsAPIView(APIView):
 
         # находим точки пагирования по которым будем обрезать 
         start = (page - 1) * settings.POSTS_PER_PAGE
-        end = page * settings.POSTS_PER_PAGE
-
+        end = page * settings.POSTS_PER_PAGE - 1
         # смотрим общее кол-во айдишников для проверки наличия постов на запрашиваемой странице 
 
         total_posts = get_length_of_zset(zset_key=zset_key)
