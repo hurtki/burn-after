@@ -12,7 +12,7 @@ cache = redis.StrictRedis(
 )
 
 # Функция для сериализации и записи данных в кеш
-def cache_set_json(key, value, ex=None):
+def cache_set_json(key, value: dict, ex=None):
     """Сериализует значение и сохраняет в кеш."""
     cache.set(key, json.dumps(value), ex=ex)
 
