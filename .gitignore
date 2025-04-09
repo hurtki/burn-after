@@ -172,4 +172,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-burn_after/burn_after/__pycache__/settings.cpython-313.pyc
