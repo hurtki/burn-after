@@ -22,6 +22,7 @@ class PostQueryParamsSerializer(serializers.Serializer):
         if not category in get_categories_from_cache():
             raise serializers.ValidationError(f"Category with name{value} doesn't exist")
         return category
+
 # сериализатор постов 
 class PostSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source='author.username', read_only=True)
