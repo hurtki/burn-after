@@ -31,17 +31,18 @@ class PostsAPIView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
         # получаем три валидрованных querry параметра из сериализатора 
-        params = serializer.validated_data
-        category = params["category"]
-        sort = params["sort"]
-        is_exploded = params["is_exploded"]
-        page = params["page"]
+        category = serializer.validated_data["category"]
+        sort = serializer.validated_data["sort"]
+        is_exploded = serializer.validated_data["is_exploded"]
+        page = serializer.validated_data["page"]
         
+        # поулчаем ОБЪЕКТ категории из базы данных
+        # в будущем надо хранить его в кеше для того чтобы вообще не обращаться к бд 
         category = Category.objects.filter(name=category).first()
         
         # формируем ключ по которому должен находится zset в кеше с отсортированным множеством четкой категории 
         zset_key = f"category:{category}:{sort}:{is_exploded}"
-        # проверяем есть нужнй нам ZSET в кеше 
+        # запускаем функцию для проверки наличия ZSET в кеше, если его там не будет она обратиться к базе данных и добавит его 
         ensure_zset_cached(category=category, sort=sort, is_exploded=is_exploded, zset_key=zset_key)
         
 
