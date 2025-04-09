@@ -40,19 +40,15 @@ INSTALLED_APPS = [
     'posts'
 ]
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-    }
-}
+
 
 POST_CACHE_SECONDS = 600 # timeout поста в кеше в секундах 
 CATEGORIES_LIST_CACHE_SECONDS = 6000 # timeout листа категорий в кеше 
 POSTS_PER_PAGE = 10 # постов на страницу 
+# настройки редиса через которые мы будем общаться с хешем 
+REDIS_HOST = "localhost" 
+REDIS_PORT = 6379
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
