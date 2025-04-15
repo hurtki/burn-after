@@ -63,16 +63,29 @@ def get_posts_for_page(zset_key, start, end, sort) -> list:
 
 
 # Проверяем, есть ли список постов в кеше, если нет — добавляем его
-def ensure_zset_cached(zset_key: str, category: Category, sort: str, is_exploded: bool) -> None:
+def ensure_zset_cached(zset_key: str, category: Category, sort_zset_key: str, is_exploded: bool) -> None:
+    
+    
     if not cache.zcard(zset_key):
         posts = Post.objects.filter(category=category, is_exploded=is_exploded).annotate(like_count=Count('likes'))
         
+        # словарь который будет отадвать нужный score по типу сортировки 
+        sort_key_map = {
+        "created_at": lambda post: post.created_at.timestamp(),
+        "likes": lambda post: post.like_count,
+        }
+        
+        
+        
         for post in posts:
-            score = post.created_at.timestamp() if sort == "created_at" else post.like_count
+            # Защита от неожиданных значений sort, даже несмотря на предварительную валидацию
+            assert sort_zset_key in sort_key_map, f"Unexpected sort key: {sort_zset_key}"
+            
+            score = sort_key_map[sort_zset_key](post)
             cache.zadd(zset_key, {str(post.id): score})
             serialized_post = PostSerializer(post).data
             cache_set_json(f'post:{post.id}', serialized_post, ex=settings.POST_CACHE_SECONDS)
-    
+
 
 def get_length_of_zset(zset_key: str) -> int:
     return get_zset_length(zset_key)
