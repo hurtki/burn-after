@@ -58,7 +58,7 @@ class PostsAPIView(APIView):
         # если нету ни одного поста то возвращаем ошибку об отсутствии страницы 
         if start >= total_posts:
             return Response({
-                "page_error": "not enough items"
+                "detail": "Requested page exceeds number of available posts"
             }, status=400)
         # смотри было ли в запросе отрицание сортировки и в зависимости от этого вытаскиваем айдишники из кеша
         posts_ids = get_posts_for_page(zset_key, start, end, sort)
