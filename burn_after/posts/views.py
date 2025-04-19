@@ -7,7 +7,7 @@ from django.conf import settings
 import json
 from datetime import datetime
 from django.db.models import Count
-from .redis import get_serialized_post_data_from_cache, get_posts_for_page, ensure_zset_cached, get_length_of_zset
+from .cache import get_serialized_post_data_from_cache, get_posts_for_page, ensure_zset_cached, get_length_of_zset
 import redis
 
 
@@ -54,7 +54,7 @@ class PostsAPIView(APIView):
         # смотрим общее кол-во айдишников для проверки наличия постов на запрашиваемой странице 
 
         total_posts = get_length_of_zset(zset_key=zset_key)
-
+        print(total_posts)
         # если нету ни одного поста то возвращаем ошибку об отсутствии страницы 
         if start >= total_posts:
             return Response({
@@ -66,6 +66,6 @@ class PostsAPIView(APIView):
         return Response(get_serialized_post_data_from_cache(posts_ids))
 
 
-def LikeAPIView(APIView):
+class LikeAPIView(APIView):
     # создаем метод для 
     pass
