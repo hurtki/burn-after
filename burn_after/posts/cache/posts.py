@@ -26,7 +26,7 @@ def get_serialized_post_data_from_cache(ids: list) -> list:
         objects = Post.objects.filter(id__in=missing_ids)
         for obj in objects:
             serialized_data = PostSerializer(obj).data
-            cache.set_json(f'post:{obj.id}', serialized_data, ex=settings.POST_SECONDS)
+            cache.set_json(f'post:{obj.id}', serialized_data, ex=settings.POST_CACHE_SECONDS)
             # тк списой айдишников в строках то и айдишник объекта из базы тоже в строку чтобы потом не ломалось при их переборе 
             cached_data[str(obj.id)] = serialized_data
 
