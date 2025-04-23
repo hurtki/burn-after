@@ -3,7 +3,7 @@ let currentPage = 1;
 
 async function loadPosts(page) {
   const params = new URLSearchParams({
-    category: "memes",
+    category: "fyi",
     page: page,
     is_exploded: "false",
     sort: "created_at"
