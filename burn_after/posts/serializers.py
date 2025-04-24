@@ -21,7 +21,7 @@ class PostQueryParamsSerializer(serializers.Serializer):
         
         category = value[0] if isinstance(value, list) else value
         if not category in get_categories_from_cache():
-            raise serializers.ValidationError(f"Category with name{value} doesn't exist")
+            raise serializers.ValidationError(f"Category with name {value} doesn't exist")
         return category
 
 # сериализатор постов 
