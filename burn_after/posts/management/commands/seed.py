@@ -22,10 +22,12 @@ class Command(BaseCommand):
         # Создаём категории
         categories = []
         for _ in range(3):
+            name = name=fake.word()[:12]
             category = Category.objects.create(
-                name=fake.word()[:12],
+                name=name,
                 author=user
             )
+            print(f"Создана категория {name}")
             categories.append(category)
 
         self.stdout.write(f"Создано {len(categories)} категорий")
