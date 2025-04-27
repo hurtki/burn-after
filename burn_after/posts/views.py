@@ -7,7 +7,7 @@ from django.conf import settings
 import json
 from datetime import datetime
 from django.db.models import Count
-from .redis import get_serialized_post_data_from_cache, get_posts_for_page, ensure_zset_cached, get_length_of_zset
+from .cache import get_serialized_post_data_from_cache, get_posts_for_page, ensure_zset_cached, get_length_of_zset
 import redis
 
 
@@ -35,15 +35,17 @@ class PostsAPIView(APIView):
         sort = serializer.validated_data["sort"]
         is_exploded = serializer.validated_data["is_exploded"]
         page = serializer.validated_data["page"]
+        # создаем название сортироваки без оринтации для получения ключа хранения zset в кеше 
+        sort_zset_key = sort.lstrip("-")
         
         # поулчаем ОБЪЕКТ категории из базы данных
         # в будущем надо хранить его в кеше для того чтобы вообще не обращаться к бд 
         category = Category.objects.filter(name=category).first()
         
         # формируем ключ по которому должен находится zset в кеше с отсортированным множеством четкой категории 
-        zset_key = f"category:{category}:{sort}:{is_exploded}"
+        zset_key = f"category:{category}:{sort_zset_key}:{is_exploded}"
         # запускаем функцию для проверки наличия ZSET в кеше, если его там не будет она обратиться к базе данных и добавит его 
-        ensure_zset_cached(category=category, sort=sort, is_exploded=is_exploded, zset_key=zset_key)
+        ensure_zset_cached(category=category, sort_zset_key=sort_zset_key, is_exploded=is_exploded, zset_key=zset_key)
         
 
         # находим точки пагирования по которым будем обрезать 
@@ -52,12 +54,18 @@ class PostsAPIView(APIView):
         # смотрим общее кол-во айдишников для проверки наличия постов на запрашиваемой странице 
 
         total_posts = get_length_of_zset(zset_key=zset_key)
-
+        print(total_posts)
         # если нету ни одного поста то возвращаем ошибку об отсутствии страницы 
         if start >= total_posts:
             return Response({
-                "page_error": "not enough items"
+                "detail": "Requested page exceeds number of available posts"
             }, status=400)
         # смотри было ли в запросе отрицание сортировки и в зависимости от этого вытаскиваем айдишники из кеша
         posts_ids = get_posts_for_page(zset_key, start, end, sort)
+
         return Response(get_serialized_post_data_from_cache(posts_ids))
+
+
+class LikeAPIView(APIView):
+    # создаем метод для 
+    pass
