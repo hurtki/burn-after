@@ -151,6 +151,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+
 # Pyre type checker
 .pyre/
 
@@ -178,4 +179,5 @@ cython_debug/
 .rdb
 /__pycache__
 dump.rdb
-burn_after/burn_after/__pycache__/__init__.cpython-313.pyc
+.DS_Store
+
