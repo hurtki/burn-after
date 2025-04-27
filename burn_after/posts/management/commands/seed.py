@@ -20,9 +20,9 @@ class Command(BaseCommand):
             self.stdout.write(f"Пользователь {user.username} уже существует")
 
         # Создаём категории
-        categories = []
-        for _ in range(3):
-            name = name=fake.word()[:12]
+        categories = ['wear', 'brother', 'enviroment']
+        for i in range(3): 
+            name = categories[i]
             category = Category.objects.create(
                 name=name,
                 author=user
