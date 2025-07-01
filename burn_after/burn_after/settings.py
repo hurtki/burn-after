@@ -38,10 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'posts',
-    'corsheaders',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True  # ⚠️ НЕ оставляй в продакшене!, для локального теста CORS
 POST_CACHE_SECONDS = 600 # timeout поста в кеше в секундах 
 CATEGORIES_LIST_CACHE_SECONDS = 6000 # timeout листа категорий в кеше 
 POSTS_PER_PAGE = 3 # постов на страницу 
@@ -57,7 +55,6 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
